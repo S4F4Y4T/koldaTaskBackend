@@ -26,11 +26,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::shouldBeStrict(! $this->app->isProduction());
+        Model::shouldBeStrict(!$this->app->isProduction());
         Model::unguard();
 
+        // Register policies
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(User::class, \App\Policies\V1\UserPolicy::class);
+        Gate::policy(\App\Models\Project::class, \App\Policies\ProjectPolicy::class);
+        Gate::policy(\App\Models\Task::class, \App\Policies\TaskPolicy::class);
 
+        // Register event listeners
+        \Event::listen(
+            \App\Events\TaskCreated::class,
+            \App\Listeners\SendTaskCreatedNotification::class
+        );
     }
 }

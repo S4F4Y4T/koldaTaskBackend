@@ -53,11 +53,13 @@ use Illuminate\Support\Facades\Route;
 // ==================== AUTHENTICATION & CUSTOMER ROUTES ====================
 require __DIR__ . '/auth.php';
 
-Route::middleware(['jwt.auth', 'throttle:jwt', 'throttle:60,1'])->group(function ()
-{
+// ==================== PROJECT MANAGEMENT ROUTES ====================
+require __DIR__ . '/project.php';
+
+Route::middleware(['jwt.auth', 'throttle:jwt', 'throttle:60,1'])->group(function () {
     //users
     Route::apiResource('users', UserController::class);
-    
+
     // RBAC & Modules       
     Route::apiResource('roles', \App\Http\Controllers\Api\V1\Admin\RoleController::class);
     Route::post('roles/{role}/permissions/assign', [\App\Http\Controllers\Api\V1\Admin\RoleController::class, 'assignPermissions']);
@@ -69,7 +71,7 @@ Route::middleware(['jwt.auth', 'throttle:jwt', 'throttle:60,1'])->group(function
 
 // ==================== HEALTH CHECK ====================
 Route::get('/health', function () {
-    return ApiResponse::success(message:'Healthy', data:[
+    return ApiResponse::success(message: 'Healthy', data: [
         'timestamp' => now(),
     ]);
 })->middleware('throttle:2,1')->name('health');
