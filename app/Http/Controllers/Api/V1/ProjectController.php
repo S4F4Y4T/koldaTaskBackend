@@ -12,6 +12,7 @@ use App\Services\V1\ProjectService;
 use App\Traits\V1\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Controller;
 
 /**
  * Project Controller
@@ -19,26 +20,13 @@ use Illuminate\Http\Request;
  * Handles all project-related HTTP requests with proper authorization
  * and optimized database queries.
  */
-class ProjectController
+class ProjectController extends Controller
 {
-    use ApiResponse;
-
-    /**
-     * Create a new ProjectController instance
-     *
-     * @param ProjectService $projectService
-     */
     public function __construct(
         protected ProjectService $projectService
     ) {
     }
 
-    /**
-     * Display a listing of projects
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Project::class);
@@ -51,13 +39,6 @@ class ProjectController
             data: ProjectResource::collection($projects)
         );
     }
-
-    /**
-     * Store a newly created project
-     *
-     * @param StoreProjectRequest $request
-     * @return JsonResponse
-     */
     public function store(StoreProjectRequest $request): JsonResponse
     {
         $this->authorize('create', Project::class);
@@ -72,12 +53,6 @@ class ProjectController
         );
     }
 
-    /**
-     * Display the specified project with tasks
-     *
-     * @param Project $project
-     * @return JsonResponse
-     */
     public function show(Project $project): JsonResponse
     {
         $this->authorize('view', $project);
@@ -90,13 +65,6 @@ class ProjectController
         );
     }
 
-    /**
-     * Update the specified project
-     *
-     * @param UpdateProjectRequest $request
-     * @param Project $project
-     * @return JsonResponse
-     */
     public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     {
         $this->authorize('update', $project);
@@ -109,13 +77,7 @@ class ProjectController
             data: ProjectResource::make($updatedProject->load('creator'))
         );
     }
-
-    /**
-     * Remove the specified project
-     *
-     * @param Project $project
-     * @return JsonResponse
-     */
+    
     public function destroy(Project $project): JsonResponse
     {
         $this->authorize('delete', $project);
@@ -123,18 +85,5 @@ class ProjectController
         $this->projectService->delete($project);
 
         return self::success('Project deleted successfully.');
-    }
-
-    /**
-     * Helper method to authorize actions
-     *
-     * @param string $ability
-     * @param mixed $arguments
-     * @return void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    protected function authorize(string $ability, mixed $arguments = []): void
-    {
-        app(\Illuminate\Contracts\Auth\Access\Gate::class)->authorize($ability, $arguments);
     }
 }

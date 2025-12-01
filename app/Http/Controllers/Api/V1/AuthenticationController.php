@@ -5,42 +5,23 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Requests\V1\Authentication\LoginRequest;
 use App\Http\Resources\V1\UserResource;
 use App\Services\V1\AuthService;
-use App\Traits\V1\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use App\Http\Controllers\Api\Controller;
 
-/**
- * Authentication Controller
- * 
- * Handles all authentication-related HTTP requests including login,
- * logout, token refresh, and user profile retrieval.
- */
-class AuthenticationController
+class AuthenticationController extends Controller
 {
-    use ApiResponse;
-
-    /**
-     * Create a new AuthenticationController instance
-     *
-     * @param AuthService $authService
-     */
     public function __construct(
         protected AuthService $authService
     ) {
     }
 
-    /**
-     * Authenticate a user and return JWT token
-     *
-     * @param LoginRequest $request
-     * @return JsonResponse
-     */
     public function login(LoginRequest $request): JsonResponse
     {
         $token = $this->authService->login(
-            $request->only('email', 'password')
+            $request->validated()
         );
 
         if (!$token) {
@@ -61,12 +42,6 @@ class AuthenticationController
             );
     }
 
-    /**
-     * Refresh the user's access token
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function refresh(Request $request): JsonResponse
     {
         $refreshToken = $request->cookie('refresh_token');
@@ -87,11 +62,6 @@ class AuthenticationController
         }
     }
 
-    /**
-     * Get the authenticated user's profile
-     *
-     * @return JsonResponse
-     */
     public function me(): JsonResponse
     {
         $user = $this->authService->getAuthenticatedUser();
@@ -102,12 +72,6 @@ class AuthenticationController
         );
     }
 
-    /**
-     * Log out the authenticated user
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function logout(Request $request): JsonResponse
     {
         $token = $request->bearerToken();
@@ -120,12 +84,6 @@ class AuthenticationController
             ->withCookie(cookie()->forget('refresh_token'));
     }
 
-    /**
-     * Create a standardized token response
-     *
-     * @param string $token The JWT access token
-     * @return JsonResponse
-     */
     protected function respondWithToken(string $token): JsonResponse
     {
         $user = $this->authService->getAuthenticatedUser();
