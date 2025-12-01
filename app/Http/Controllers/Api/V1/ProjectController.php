@@ -18,7 +18,7 @@ class ProjectController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', Project::class);
+        $this->authorize('all', Project::class);
 
         $filter = ProjectFilter::init();
         $projects = Project::with(['creator', 'tasks'])
