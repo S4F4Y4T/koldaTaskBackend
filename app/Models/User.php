@@ -119,7 +119,7 @@ class User extends Authenticatable implements JWTSubject
 
     private function checkUserAbility($ability)
     {
-        if($this->checkAbility($ability)){
+        if ($this->checkAbility($ability)) {
             return true;
         }
 
@@ -135,8 +135,27 @@ class User extends Authenticatable implements JWTSubject
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class,);
+        return $this->hasMany(Transaction::class, );
     }
 
+    /**
+     * Get all projects created by the user
+     *
+     * @return HasMany
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(\App\Models\Project::class, 'created_by');
+    }
+
+    /**
+     * Get all tasks assigned to the user
+     *
+     * @return HasMany
+     */
+    public function assignedTasks(): HasMany
+    {
+        return $this->hasMany(\App\Models\Task::class, 'assigned_user_id');
+    }
 
 }
