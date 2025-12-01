@@ -7,10 +7,10 @@ use App\Http\Controllers\Api\V1\Animal\AnimalReportController;
 use App\Http\Controllers\Api\V1\Animal\ExpenseController;
 use App\Http\Controllers\Api\V1\Authentication\PermissionController;
 use App\Http\Controllers\Api\V1\Authentication\RoleController;
-use App\Http\Controllers\Api\V1\Authentication\UserController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\Breed\BreedController;
 use App\Http\Controllers\Api\V1\Customer\CustomerController;
-use App\Http\Controllers\Api\V1\Dashboard\DashboardController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\Finance\AccountController;
 use App\Http\Controllers\Api\V1\Finance\TransactionCategoryController;
 use App\Http\Controllers\Api\V1\Finance\TransactionController;
@@ -61,9 +61,9 @@ Route::middleware(['jwt.auth', 'throttle:jwt', 'throttle:60,1'])->group(function
     Route::apiResource('users', UserController::class);
 
     // RBAC & Modules       
-    Route::apiResource('roles', \App\Http\Controllers\Api\V1\Admin\RoleController::class);
-    Route::post('roles/{role}/permissions/assign', [\App\Http\Controllers\Api\V1\Admin\RoleController::class, 'assignPermissions']);
-    Route::get('modules', [\App\Http\Controllers\Api\V1\Admin\ModuleController::class, 'index']);
+    Route::apiResource('roles', \App\Http\Controllers\Api\V1\RoleController::class);
+    Route::post('roles/{role}/permissions/assign', [\App\Http\Controllers\Api\V1\RoleController::class, 'assignPermissions']);
+    // Route::get('modules', [\App\Http\Controllers\Api\V1\Admin\ModuleController::class, 'index']);
 
     //dashboard
     Route::get('dashboard', [DashboardController::class, 'index']);

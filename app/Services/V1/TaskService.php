@@ -2,6 +2,7 @@
 
 namespace App\Services\V1;
 
+use App\DTOs\V1\TaskDTO;
 use App\Filters\V1\QueryFilter;
 use App\Models\Project;
 use App\Models\Task;
@@ -19,27 +20,24 @@ class TaskService
     /**
      * Create a new task for a project
      *
-     * @param Project $project
-     * @param array $data Task data
+     * @param TaskDTO $dto Task data transfer object
      * @return Task
      */
-    public function create(Project $project, array $data): Task
+    public function create(TaskDTO $dto): Task
     {
-        $data['project_id'] = $project->id;
-
-        return Task::create($data);
+        return Task::create($dto->toArray());
     }
 
     /**
      * Update an existing task
      *
      * @param Task $task
-     * @param array $data
+     * @param TaskDTO $dto
      * @return Task
      */
-    public function update(Task $task, array $data): Task
+    public function update(Task $task, TaskDTO $dto): Task
     {
-        $task->update($data);
+        $task->update($dto->toArrayForUpdate());
 
         return $task->fresh();
     }

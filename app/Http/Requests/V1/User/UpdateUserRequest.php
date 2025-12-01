@@ -3,7 +3,6 @@
 namespace App\Http\Requests\V1\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
@@ -26,17 +25,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'unique:users,email,' . $this->route('user')->id],
-            'password' => 'required|min:8',
+            'password' => 'nullable|min:8',
         ];
-    }
-
-    public function validatedData()
-    {
-        $validatedData = parent::validated();
-
-        // Hash the password
-        $validatedData['password'] = Hash::make($validatedData['password']);
-
-        return $validatedData;
     }
 }

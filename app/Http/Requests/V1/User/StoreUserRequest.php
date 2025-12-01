@@ -3,7 +3,6 @@
 namespace App\Http\Requests\V1\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
@@ -28,15 +27,5 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required|min:8',
         ];
-    }
-
-    public function validatedData()
-    {
-        $validatedData = parent::validated();
-
-        // Hash the password
-        $validatedData['password'] = Hash::make($validatedData['password']);
-
-        return $validatedData;
     }
 }

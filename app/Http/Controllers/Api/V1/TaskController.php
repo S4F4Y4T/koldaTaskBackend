@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\DTOs\V1\TaskDTO;
 use App\Filters\V1\TaskFilter;
 use App\Http\Requests\V1\Task\StoreTaskRequest;
 use App\Http\Requests\V1\Task\UpdateTaskRequest;
@@ -63,10 +64,8 @@ class TaskController
     {
         $this->authorize('create', [Task::class, $project]);
 
-        $task = $this->taskService->create(
-            $project,
-            $request->validated()
-        );
+        $dto = TaskDTO::fromRequest($request, $project->id);
+        $task = $this->taskService->create($dto);
 
         // Event is automatically dispatched via model's $dispatchesEvents
         // which triggers SendTaskNotification job
@@ -105,10 +104,8 @@ class TaskController
     {
         $this->authorize('update', $task);
 
-        $updatedTask = $this->taskService->update(
-            $task,
-            $request->validated()
-        );
+        $dto = TaskDTO::fromRequest($request, $task->project_id);
+        $updatedTask = $this->taskService->update($task, $dto);
 
         return self::success(
             'Task updated successfully.',

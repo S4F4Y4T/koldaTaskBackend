@@ -2,6 +2,7 @@
 
 namespace App\Services\V1;
 
+use App\DTOs\V1\ProjectDTO;
 use App\Filters\V1\QueryFilter;
 use App\Models\Project;
 use App\Models\User;
@@ -18,27 +19,24 @@ class ProjectService
     /**
      * Create a new project
      *
-     * @param array $data Project data
-     * @param User $creator User creating the project
+     * @param ProjectDTO $dto Project data transfer object
      * @return Project
      */
-    public function create(array $data, User $creator): Project
+    public function create(ProjectDTO $dto): Project
     {
-        $data['created_by'] = $creator->id;
-
-        return Project::create($data);
+        return Project::create($dto->toArray());
     }
 
     /**
      * Update an existing project
      *
      * @param Project $project
-     * @param array $data
+     * @param ProjectDTO $dto
      * @return Project
      */
-    public function update(Project $project, array $data): Project
+    public function update(Project $project, ProjectDTO $dto): Project
     {
-        $project->update($data);
+        $project->update($dto->toArrayForUpdate());
 
         return $project->fresh();
     }

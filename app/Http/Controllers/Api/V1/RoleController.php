@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Admin;
+namespace App\Http\Controllers\Api\V1;
 
+use App\DTOs\V1\RoleDTO;
 use App\Filters\V1\RoleFilter;
 use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\Role\StoreRoleRequest;
@@ -27,7 +28,10 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
-        $role = Role::create($request->validated());
+        
+        $dto = RoleDTO::fromRequest($request);
+        $role = Role::create($dto->toArray());
+        
         return self::success(message: 'Role created successfully', code: 201, data: RoleResource::make($role));
     }
 
@@ -40,7 +44,10 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse
     {
         $this->isAuthorized('update', $role);
-        $role->update($request->validated());
+        
+        $dto = RoleDTO::fromRequest($request);
+        $role->update($dto->toArray());
+        
         return self::success(message: 'Role updated successfully', data: RoleResource::make($role));
     }
 

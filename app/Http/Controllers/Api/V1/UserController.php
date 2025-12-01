@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Authentication;
+namespace App\Http\Controllers\Api\V1;
 
+use App\DTOs\V1\UserDTO;
 use App\Filters\V1\UserFilter;
 use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\User\StoreUserRequest;
@@ -37,7 +38,10 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
-        $user = User::query()->create($request->validatedData());
+        
+        $dto = UserDTO::fromRequest($request);
+        $user = User::query()->create($dto->toArray());
+        
         return self::success(message: "User created successfully", code: 201, data: UserResource::make($user));
     }
 
@@ -56,7 +60,10 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $this->isAuthorized('update', $user);
-        tap($user)->update($request->validatedData());
+        
+        $dto = UserDTO::fromRequest($request);
+        tap($user)->update($dto->toArray());
+        
         return self::success(message: "User updated successfully", data: new UserResource($user));
     }
 

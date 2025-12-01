@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\DTOs\V1\ProjectDTO;
 use App\Filters\V1\ProjectFilter;
 use App\Http\Requests\V1\Project\StoreProjectRequest;
 use App\Http\Requests\V1\Project\UpdateProjectRequest;
@@ -61,10 +62,8 @@ class ProjectController
     {
         $this->authorize('create', Project::class);
 
-        $project = $this->projectService->create(
-            $request->validated(),
-            $request->user()
-        );
+        $dto = ProjectDTO::fromRequest($request);
+        $project = $this->projectService->create($dto);
 
         return self::success(
             'Project created successfully.',
@@ -102,10 +101,8 @@ class ProjectController
     {
         $this->authorize('update', $project);
 
-        $updatedProject = $this->projectService->update(
-            $project,
-            $request->validated()
-        );
+        $dto = ProjectDTO::fromRequest($request);
+        $updatedProject = $this->projectService->update($project, $dto);
 
         return self::success(
             'Project updated successfully.',

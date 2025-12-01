@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Authentication;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Requests\V1\Authentication\LoginRequest;
 use App\Http\Resources\V1\UserResource;
