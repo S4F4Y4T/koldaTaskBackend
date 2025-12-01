@@ -9,43 +9,23 @@ use App\Http\Requests\V1\Task\UpdateTaskRequest;
 use App\Http\Resources\V1\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
-use App\Services\V1\TaskService;
-use App\Traits\V1\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Controller;
+use App\Traits\ApiResponse;
 
-/**
- * Task Controller
- * 
- * Handles all task-related HTTP requests with proper authorization
- * and queue job dispatching for notifications.
- */
-class TaskController
+class TaskController extends Controller
 {
-    use ApiResponse;
 
-    /**
-     * Create a new TaskController instance
-     *
-     * @param TaskService $taskService
-     */
-    public function __construct(
-        protected TaskService $taskService
-    ) {
-    }
+    protected string $policyModel = Task::class;
 
-    /**
-     * Display a listing of tasks
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, TaskFilter $filter): JsonResponse
     {
-        $this->authorize('viewAny', Task::class);
+        $this->authorize('all');
 
-        $filter = TaskFilter::init();
-        $tasks = $this->taskService->getAll($filter);
+        $tasks = Task::with(['project', 'assignedUser'])
+            ->filter($filter)
+            ->get();
 
         return self::success(
             'Tasks retrieved successfully.',
@@ -53,36 +33,19 @@ class TaskController
         );
     }
 
-    /**
-     * Store a newly created task in a project
-     *
-     * @param StoreTaskRequest $request
-     * @param Project $project
-     * @return JsonResponse
-     */
     public function store(StoreTaskRequest $request, Project $project): JsonResponse
     {
-        $this->authorize('create', [Task::class, $project]);
+        $this->authorize('create');
 
-        $dto = TaskDTO::fromRequest($request, $project->id);
-        $task = $this->taskService->create($dto);
-
-        // Event is automatically dispatched via model's $dispatchesEvents
-        // which triggers SendTaskNotification job
+        $task = Task::create(TaskDTO::fromRequest($request, $project->id)->toArray());
 
         return self::success(
-            'Task created successfully. Notification sent to assigned user.',
+            'Task created successfully.',
             201,
             TaskResource::make($task->load(['project', 'assignedUser']))
         );
     }
 
-    /**
-     * Display the specified task
-     *
-     * @param Task $task
-     * @return JsonResponse
-     */
     public function show(Task $task): JsonResponse
     {
         $this->authorize('view', $task);
@@ -93,51 +56,24 @@ class TaskController
         );
     }
 
-    /**
-     * Update the specified task
-     *
-     * @param UpdateTaskRequest $request
-     * @param Task $task
-     * @return JsonResponse
-     */
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
         $this->authorize('update', $task);
 
-        $dto = TaskDTO::fromRequest($request, $task->project_id);
-        $updatedTask = $this->taskService->update($task, $dto);
+        $task->update(TaskDTO::fromRequest($request, $task->project_id)->toArray());
 
         return self::success(
             'Task updated successfully.',
-            data: TaskResource::make($updatedTask->load(['project', 'assignedUser']))
+            data: TaskResource::make($task->load(['project', 'assignedUser']))
         );
     }
 
-    /**
-     * Remove the specified task
-     *
-     * @param Task $task
-     * @return JsonResponse
-     */
     public function destroy(Task $task): JsonResponse
     {
         $this->authorize('delete', $task);
 
-        $this->taskService->delete($task);
+        $task->delete();
 
         return self::success('Task deleted successfully.');
-    }
-
-    /**
-     * Helper method to authorize actions
-     *
-     * @param string $ability
-     * @param mixed $arguments
-     * @return void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    protected function authorize(string $ability, mixed $arguments = []): void
-    {
-        app(\Illuminate\Contracts\Auth\Access\Gate::class)->authorize($ability, $arguments);
     }
 }

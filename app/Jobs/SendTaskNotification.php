@@ -35,24 +35,13 @@ class SendTaskNotification implements ShouldQueue
      */
     public $backoff = 60;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param Task $task
-     */
     public function __construct(
         public Task $task
     ) {
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle(): void
     {
-        // Load relationships if not already loaded
         if (!$this->task->relationLoaded('assignedUser')) {
             $this->task->load('assignedUser');
         }
@@ -61,20 +50,12 @@ class SendTaskNotification implements ShouldQueue
             $this->task->load('project');
         }
 
-        // Send email to assigned user
         Mail::to($this->task->assignedUser->email)
             ->send(new TaskAssignedMail($this->task));
     }
 
-    /**
-     * Handle a job failure.
-     *
-     * @param \Throwable $exception
-     * @return void
-     */
-    public function failed(\Throwable $exception): void
+        public function failed(\Throwable $exception): void
     {
-        // Log the failure or notify administrators
         \Log::error('Failed to send task notification', [
             'task_id' => $this->task->id,
             'error' => $exception->getMessage(),

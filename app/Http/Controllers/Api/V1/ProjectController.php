@@ -8,31 +8,22 @@ use App\Http\Requests\V1\Project\StoreProjectRequest;
 use App\Http\Requests\V1\Project\UpdateProjectRequest;
 use App\Http\Resources\V1\ProjectResource;
 use App\Models\Project;
-use App\Services\V1\ProjectService;
 use App\Traits\V1\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\Controller;
 
-/**
- * Project Controller
- * 
- * Handles all project-related HTTP requests with proper authorization
- * and optimized database queries.
- */
 class ProjectController extends Controller
 {
-    public function __construct(
-        protected ProjectService $projectService
-    ) {
-    }
 
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Project::class);
 
         $filter = ProjectFilter::init();
-        $projects = $this->projectService->getAll($filter);
+        $projects = Project::with(['creator', 'tasks'])
+            ->filter($filter)
+            ->get();
 
         return self::success(
             'Projects retrieved successfully.',
@@ -44,7 +35,7 @@ class ProjectController extends Controller
         $this->authorize('create', Project::class);
 
         $dto = ProjectDTO::fromRequest($request);
-        $project = $this->projectService->create($dto);
+        $project = Project::create($dto->toArray());
 
         return self::success(
             'Project created successfully.',
@@ -57,11 +48,11 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
 
-        $projectWithTasks = $this->projectService->getWithTasks($project->id);
+        $project->load(['tasks.assignedUser', 'creator']);
 
         return self::success(
             'Project retrieved successfully.',
-            data: ProjectResource::make($projectWithTasks)
+            data: ProjectResource::make($project)
         );
     }
 
@@ -69,8 +60,7 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        $dto = ProjectDTO::fromRequest($request);
-        $updatedProject = $this->projectService->update($project, $dto);
+        $project->update(ProjectDTO::fromRequest($request)->toArray());
 
         return self::success(
             'Project updated successfully.',
@@ -82,7 +72,7 @@ class ProjectController extends Controller
     {
         $this->authorize('delete', $project);
 
-        $this->projectService->delete($project);
+        $project->delete();
 
         return self::success('Project deleted successfully.');
     }

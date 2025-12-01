@@ -52,7 +52,7 @@ it('fails with invalid password', function () {
 
     expect($response->status())->toBe(401)
         ->and($response->json('type'))->toBe('error')
-        ->and($response->json('message'))->toBe('Invalid Credentials.');
+        ->and($response->json('message'))->toBe('Invalid credentials.');
 });
 
 it('logs in successfully with valid credentials', function () {
@@ -160,7 +160,7 @@ it('authenticate user logout successfully', function () {
 
     expect($logoutResponse->status())->toBe(200)
         ->and($logoutResponse->json('type'))->toBe('success')
-        ->and($logoutResponse->json('message'))->toBe('Successfully logged out');
+        ->and($logoutResponse->json('message'))->toBe('Successfully logged out.');
 
     $usersResponse = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,

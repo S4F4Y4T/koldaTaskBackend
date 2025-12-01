@@ -18,12 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class UserController extends Controller
 {
     protected string $policyModel = User::class;
-    protected string $resource = UserResource::class;
-    protected string $filter = UserFilter::class;
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(UserFilter $filter): AnonymousResourceCollection
     {
         $this->isAuthorized('all');
@@ -32,31 +27,22 @@ class UserController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
         
         $dto = UserDTO::fromRequest($request);
-        $user = User::query()->create($dto->toArray());
+        $user = User::create($dto->toArray());
         
         return self::success(message: "User created successfully", code: 201, data: UserResource::make($user));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user): JsonResource
     {
         $this->isAuthorized('show', $user);
         return UserResource::make($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $this->isAuthorized('update', $user);
@@ -67,9 +53,6 @@ class UserController extends Controller
         return self::success(message: "User updated successfully", data: new UserResource($user));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user): JsonResponse
     {
         $this->isAuthorized('delete', $user);

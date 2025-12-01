@@ -27,21 +27,11 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -50,21 +40,11 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims()
     {
         return [];
@@ -92,10 +72,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function hasRole($roleName): bool
     {
-        // Ensure that roleName is an array for consistent handling
         $roleNames = is_array($roleName) ? $roleName : [$roleName];
 
-        // Check if any of the roles exist for the user
         $roleCount = $this->roles()->whereIn('name', $roleNames)->count();
 
         return $roleCount === count($roleNames);
@@ -103,17 +81,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function can($abilities, $arguments = []): bool
     {
-        // If $abilities is an iterable, we check all abilities
         if (is_iterable($abilities)) {
             foreach ($abilities as $ability) {
                 if ($this->checkUserAbility($ability)) {
                     return true;
                 }
             }
-            return false; // Return false if none of the abilities match
+            return false;
         }
 
-        // If $abilities is a string, we check just one ability
         return $this->checkUserAbility($abilities);
     }
 
@@ -128,31 +104,6 @@ class User extends Authenticatable implements JWTSubject
         });
     }
 
-    public function scopeFilter(Builder $query, QueryFilter $filter): void
-    {
-        $filter->apply($query);
-    }
-
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class, );
-    }
-
-    /**
-     * Get all projects created by the user
-     *
-     * @return HasMany
-     */
-    public function projects(): HasMany
-    {
-        return $this->hasMany(\App\Models\Project::class, 'created_by');
-    }
-
-    /**
-     * Get all tasks assigned to the user
-     *
-     * @return HasMany
-     */
     public function assignedTasks(): HasMany
     {
         return $this->hasMany(\App\Models\Task::class, 'assigned_user_id');

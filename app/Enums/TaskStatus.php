@@ -9,21 +9,11 @@ enum TaskStatus: string
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
 
-    /**
-     * Get all available status values
-     *
-     * @return array<string>
-     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
     }
 
-    /**
-     * Get human-readable label for the status
-     *
-     * @return string
-     */
     public function label(): string
     {
         return match ($this) {
@@ -34,11 +24,6 @@ enum TaskStatus: string
         };
     }
 
-    /**
-     * Get color code for the status (useful for UI)
-     *
-     * @return string
-     */
     public function color(): string
     {
         return match ($this) {

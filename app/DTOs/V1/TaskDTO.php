@@ -55,15 +55,4 @@ class TaskDTO
         ], fn($value) => !is_null($value));
     }
 
-    public function toArrayForUpdate(): array
-    {
-        return array_filter([
-            'title' => $this->title,
-            'description' => $this->description,
-            'status' => $this->status,
-            'priority' => $this->priority,
-            'due_date' => $this->due_date,
-            'assigned_to' => $this->assigned_to,
-        ], fn($value) => !is_null($value));
-    }
 }

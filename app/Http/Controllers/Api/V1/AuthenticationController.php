@@ -4,25 +4,18 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Requests\V1\Authentication\LoginRequest;
 use App\Http\Resources\V1\UserResource;
-use App\Services\V1\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use App\Http\Controllers\Api\Controller;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticationController extends Controller
 {
-    public function __construct(
-        protected AuthService $authService
-    ) {
-    }
-
     public function login(LoginRequest $request): JsonResponse
     {
-        $token = $this->authService->login(
-            $request->validated()
-        );
+        $token = auth()->attempt($request->validated());
 
         if (!$token) {
             return self::error('Invalid credentials.', 401);
@@ -31,8 +24,8 @@ class AuthenticationController extends Controller
         return $this->respondWithToken($token)
             ->cookie(
                 'refresh_token',
-                $this->authService->generateRefreshToken(),
-                $this->authService->getRefreshTokenTTL(),
+                auth()->refresh(),
+                config('jwt.refresh_ttl', 20160),
                 '/',
                 null,
                 true,
@@ -51,9 +44,10 @@ class AuthenticationController extends Controller
         }
 
         try {
-            $newToken = $this->authService->refresh($refreshToken);
-
-            return $this->respondWithToken($newToken);
+            
+            return $this->respondWithToken(
+                auth()->setToken($refreshToken)->refresh()
+            );
 
         } catch (TokenExpiredException $e) {
             return self::error('Refresh token has expired.', 401);
@@ -64,38 +58,26 @@ class AuthenticationController extends Controller
 
     public function me(): JsonResponse
     {
-        $user = $this->authService->getAuthenticatedUser();
-
-        return self::success(
-            'User profile retrieved successfully.',
-            data: UserResource::make($user)
-        );
+        return self::success('Data fetched successfully', data: auth()->user());
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        $token = $request->bearerToken();
+        JWTAuth::invalidate(JWTAuth::getToken());
 
-        if ($token) {
-            $this->authService->logout($token);
-        }
-
-        return self::success('Successfully logged out.')
-            ->withCookie(cookie()->forget('refresh_token'));
+        return self::success(message: 'Successfully logged out');
     }
 
-    protected function respondWithToken(string $token): JsonResponse
+    protected function respondWithToken($token): JsonResponse
     {
-        $user = $this->authService->getAuthenticatedUser();
-
-        return self::success(
-            'Authentication successful.',
-            data: [
+        return self::success(message: 'authentication successful',
+            data:[
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => $this->authService->getTokenTTL(),
-                'user' => UserResource::make($user)
-            ]
-        );
+                'expires_in' => auth()->factory()->getTTL() * 60,
+                'user' => UserResource::make(
+                    auth()->user()->load('roles.permissions')
+                )
+            ]);
     }
 }

@@ -25,4 +25,4 @@ Route::get('/health', function () {
     return ApiResponse::success(message: 'Healthy', data: [
         'timestamp' => now(),
     ]);
-})->middleware('throttle:60,1')->name('health');
+})->middleware('throttle:2,1')->name('health');

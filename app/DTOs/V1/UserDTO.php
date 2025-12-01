@@ -44,13 +44,4 @@ class UserDTO
 
         return $data;
     }
-
-    public function toArrayForUpdate(): array
-    {
-        return array_filter([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => $this->password ? Hash::make($this->password) : null,
-        ], fn($value) => !is_null($value));
-    }
 }

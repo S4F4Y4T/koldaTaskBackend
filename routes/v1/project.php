@@ -11,5 +11,4 @@ Route::middleware(['jwt.auth', 'throttle:jwt'])->group(function ()
     Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('projects.tasks.store');
 
     Route::apiResource('tasks', TaskController::class);
-
 });
