@@ -1,0 +1,61 @@
+services:
+    app:
+        build: .
+        container_name: koldatech_backend
+        restart: always
+        volumes:
+            - .:/var/www
+        depends_on:
+            - db
+        networks:
+            - koldatech
+
+    nginx:
+        image: nginx:latest
+        container_name: koldatech_nginx
+        restart: always
+        ports:
+            - "6000:80"
+        volumes:
+            - .:/var/www
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - koldatech
+
+    db:
+        image: mysql:8.0
+        container_name: koldatech_mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: koldatech
+            MYSQL_USER: koldatech_user
+            MYSQL_PASSWORD: password
+            MYSQL_ROOT_PASSWORD: rootpassword
+        volumes:
+            - koldatech:/var/lib/mysql
+        networks:
+            - koldatech
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: koldatech_phpmyadmin
+        restart: always
+        ports:
+            - "6080:80"
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: rootpassword
+        depends_on:
+            - db
+        networks:
+            - koldatech
+
+volumes:
+    koldatech:
+
+
+networks:
+    koldatech:
+        driver: bridge
