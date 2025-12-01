@@ -55,7 +55,6 @@ require __DIR__ . '/auth.php';
 
 Route::middleware(['jwt.auth', 'throttle:jwt', 'throttle:60,1'])->group(function ()
 {
-
     //users
     Route::apiResource('users', UserController::class);
     

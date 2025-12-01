@@ -15,11 +15,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class RoleController extends Controller
 {
     protected string $policyModel = Role::class;
-    protected string $filter = RoleFilter::class;
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(RoleFilter $filter): AnonymousResourceCollection
     {
         $this->isAuthorized('all');
@@ -28,9 +24,6 @@ class RoleController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRoleRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
@@ -38,18 +31,12 @@ class RoleController extends Controller
         return self::success(message: 'Role created successfully', code: 201, data: RoleResource::make($role));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Role $role): JsonResponse
     {
         $this->isAuthorized('show', $role);
         return self::success(message: 'Role fetched successfully', data: RoleResource::make($role->load('permissions')));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse
     {
         $this->isAuthorized('update', $role);
@@ -57,9 +44,6 @@ class RoleController extends Controller
         return self::success(message: 'Role updated successfully', data: RoleResource::make($role));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Role $role): JsonResponse
     {
         $this->isAuthorized('delete', $role);
@@ -69,7 +53,7 @@ class RoleController extends Controller
 
     public function assignPermissions(Request $request, Role $role): JsonResponse
     {
-        $this->isAuthorized('update', $role); // Assuming update permission covers assigning permissions
+        $this->isAuthorized('update', $role);
         
         $request->validate([
             'permissions' => ['required', 'array'],

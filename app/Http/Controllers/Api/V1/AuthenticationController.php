@@ -22,27 +22,24 @@ class AuthenticationController
 
     public function login(LoginRequest $request): JsonResponse
     {
-        // Attempt to authenticate the user with the provided credentials (email and password)
         if (! $token = auth()->attempt($request->only('email', 'password'))) {
-            return self::error('Invalid Credentials.', 401); // Return error if authentication fails
+            return self::error('Invalid Credentials.', 401);
         }
 
-        // Use the helper function to respond with the access token
         return $this->respondWithToken($token)
             ->cookie(
-                'refresh_token',         // Cookie name
-                auth()->refresh(),                   // Token
-                config('jwt.refresh_ttl'), // Expiration time in minutes from config
-                '/',                             // Path
-                null,                            // Domain (optional)
-                true,                            // Secure (HTTPS only)
-                true                             // HTTP-only (not accessible via JavaScript)
+                'refresh_token',         
+                auth()->refresh(),                   
+                config('jwt.refresh_ttl'), 
+                '/',                             
+                null,                            
+                true                             
             );
     }
 
    public function refresh(Request $request): JsonResponse
     {
-        $refreshToken = $request->cookie('refresh_token'); // Retrieve the refresh token from the cookie
+        $refreshToken = $request->cookie('refresh_token');
 
         try {
             return $this->respondWithToken(
@@ -55,20 +52,6 @@ class AuthenticationController
             return response()->json(['error' => 'Invalid refresh token'], 400);
         }
     }
-
-   public function forgetPassword(ForgetPassword $request, RequestForgetPassword $action): JsonResponse
-   {
-       $forgotPassword = $action($request->validated());
-
-       return self::success(message: $forgotPassword);
-   }
-
-   public function resetPassword(ResetPassword $request, ResetPasswordAction $action): JsonResponse
-   {
-       $reset = $action($request->only('email', 'password', 'confirm_password', 'token'));
-
-       return self::success(message: (string)$reset);
-   }
 
     public function me(): JsonResponse
     {
