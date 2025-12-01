@@ -8,7 +8,7 @@ use App\Http\Requests\V1\Project\StoreProjectRequest;
 use App\Http\Requests\V1\Project\UpdateProjectRequest;
 use App\Http\Resources\V1\ProjectResource;
 use App\Models\Project;
-use App\Traits\V1\ApiResponse;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\Controller;
@@ -64,7 +64,7 @@ class ProjectController extends Controller
 
         return self::success(
             'Project updated successfully.',
-            data: ProjectResource::make($updatedProject->load('creator'))
+            data: ProjectResource::make($project->load('creator'))
         );
     }
     

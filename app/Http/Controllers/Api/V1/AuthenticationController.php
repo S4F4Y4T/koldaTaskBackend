@@ -63,7 +63,7 @@ class AuthenticationController extends Controller
 
     public function logout(): JsonResponse
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        auth()->logout();
 
         return self::success(message: 'Successfully logged out');
     }

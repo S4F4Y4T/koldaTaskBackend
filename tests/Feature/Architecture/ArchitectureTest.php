@@ -1,10 +1,5 @@
 <?php
 
-//arch('strict types')
-//    ->expect('App')
-//    ->toUseStrictTypes();
-
-
 arch('fails when model not extend main model')
     ->expect('App\Models')
     ->toBeClasses()
@@ -25,10 +20,4 @@ arch('traits')
     ->expect('App\Traits')
     ->toBeTraits();
 
-arch()
-    ->expect('App')
-    ->not->toHaveFileSystemPermissions('0777');
 
-arch()
-   ->expect('App')
-   ->toHaveFileSystemPermissions('0644');

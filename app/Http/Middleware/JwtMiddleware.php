@@ -17,17 +17,21 @@ class JwtMiddleware
     public function handle($request, Closure $next)
     {
         try {
-            JWTAuth::parseToken()->authenticate();
+            auth('api')->setToken($request->bearerToken())->authenticate();
         } catch (TokenExpiredException $e) {
             return self::error('Token expired.', 401);
         } catch (TokenInvalidException $e) {
             return self::error('Token not valid.', 401);
         } catch (JWTException $e) {
             return self::error('Token not found.', 401);
+        } catch (\Illuminate\Auth\AuthenticationException $e) {
+            return self::error('Token not valid.', 401);
         } catch (Exception $e) {
             return self::error('Invalid Token', 500);
         }
 
         return $next($request);
     }
+
+
 }

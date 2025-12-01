@@ -35,14 +35,6 @@ class Task extends Main
         ];
     }
 
-    protected function casts(): array
-    {
-        return [
-            'deadline' => 'datetime',
-            'status' => TaskStatus::class,
-        ];
-    }
-
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

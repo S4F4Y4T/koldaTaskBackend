@@ -8,7 +8,7 @@ use App\Enums\PermissionEnum;
 
 class TaskPolicy
 {
-    public function viewAny(User $user): bool
+    public function all(User $user): bool
     {
         return $user->can(PermissionEnum::TASK_READ->value);
     }

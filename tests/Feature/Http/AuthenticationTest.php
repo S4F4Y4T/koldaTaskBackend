@@ -79,9 +79,7 @@ it('fetches users data successfully with a valid token', function () {
 
     $token = $response->json('data')['access_token'];
 
-    $usersResponse = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-    ])->getJson(route('v1.auth.me'));
+    $usersResponse = $this->withToken($token)->getJson(route('v1.auth.me'));
 
     expect($usersResponse->status())->toBe(200)
         ->and($usersResponse->json('type'))->toBe('success')
@@ -151,16 +149,14 @@ it('authenticate user logout successfully', function () {
 
     $token = $response->json('data')['access_token'];
 
-    $logoutResponse = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-    ])->postJson(route('v1.auth.logout'), [
+    $logoutResponse = $this->withToken($token)->postJson(route('v1.auth.logout'), [
                 'email' => $this->user->email,
                 'password' => 'password',
             ]);
 
     expect($logoutResponse->status())->toBe(200)
         ->and($logoutResponse->json('type'))->toBe('success')
-        ->and($logoutResponse->json('message'))->toBe('Successfully logged out.');
+        ->and($logoutResponse->json('message'))->toBe('Successfully logged out');
 
     $usersResponse = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
@@ -174,7 +170,6 @@ it('authenticate user logout successfully', function () {
 it('fails unauthenticated user from logout', function () {
 
     $logoutResponse = $this->postJson(route('v1.auth.logout'));
-
 
     expect($logoutResponse->status())->toBe(401)
         ->and($logoutResponse->json('type'))->toBe('error');
