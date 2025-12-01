@@ -84,8 +84,8 @@ it('fetches users data successfully with a valid token', function () {
     ])->getJson(route('v1.auth.me'));
 
     expect($usersResponse->status())->toBe(200)
-    ->and($usersResponse->json('type'))->toBe('success')
-    ->and($usersResponse->json('data'))->toBeArray();
+        ->and($usersResponse->json('type'))->toBe('success')
+        ->and($usersResponse->json('data'))->toBeArray();
 });
 
 it('fails with invalid token', function () {
@@ -95,8 +95,8 @@ it('fails with invalid token', function () {
     ])->getJson(route('v1.auth.me'));
 
     expect($usersResponse->status())->toBe(401)
-    ->and($usersResponse->json('type'))->toBe('error')
-    ->and($usersResponse->json('message'))->toBe('Token not valid.');
+        ->and($usersResponse->json('type'))->toBe('error')
+        ->and($usersResponse->json('message'))->toBe('Token not valid.');
 });
 
 it('rejects a request with an expired token', function () {
@@ -134,12 +134,12 @@ it('fails when logged in user login', function () {
     $usersResponse = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
     ])->postJson(route('v1.auth.login'), [
-        'email' => $this->user->email,
-        'password' => 'password',
-    ]);
+                'email' => $this->user->email,
+                'password' => 'password',
+            ]);
 
     expect($usersResponse->status())->toBe(403)
-    ->and($usersResponse->json('message'))->toBe('You are already logged In.');
+        ->and($usersResponse->json('message'))->toBe('You are already logged In.');
 });
 
 it('authenticate user logout successfully', function () {
@@ -154,9 +154,9 @@ it('authenticate user logout successfully', function () {
     $logoutResponse = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
     ])->postJson(route('v1.auth.logout'), [
-        'email' => $this->user->email,
-        'password' => 'password',
-    ]);
+                'email' => $this->user->email,
+                'password' => 'password',
+            ]);
 
     expect($logoutResponse->status())->toBe(200)
         ->and($logoutResponse->json('type'))->toBe('success')
@@ -180,8 +180,7 @@ it('fails unauthenticated user from logout', function () {
         ->and($logoutResponse->json('type'))->toBe('error');
 });
 
-it('refresh token', function ()
-{
+it('refresh token', function () {
     $response = $this->postJson(route('v1.auth.login'), [
         'email' => $this->user->email,
         'password' => 'password',
