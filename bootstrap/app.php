@@ -47,6 +47,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => GuestMiddleware::class,
         ]);
 
+        // Configure CORS
+        $middleware->api(prepend: [
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
