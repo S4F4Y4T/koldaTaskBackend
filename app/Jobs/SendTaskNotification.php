@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 /**
  * Queue job to send task assignment notification email
- * 
+ *
  * This job is dispatched when a task is created and sends
  * an email notification to the assigned user.
  */
@@ -37,16 +37,15 @@ class SendTaskNotification implements ShouldQueue
 
     public function __construct(
         public Task $task
-    ) {
-    }
+    ) {}
 
     public function handle(): void
     {
-        if (!$this->task->relationLoaded('assignedUser')) {
+        if (! $this->task->relationLoaded('assignedUser')) {
             $this->task->load('assignedUser');
         }
 
-        if (!$this->task->relationLoaded('project')) {
+        if (! $this->task->relationLoaded('project')) {
             $this->task->load('project');
         }
 
@@ -54,7 +53,7 @@ class SendTaskNotification implements ShouldQueue
             ->send(new TaskAssignedMail($this->task));
     }
 
-        public function failed(\Throwable $exception): void
+    public function failed(\Throwable $exception): void
     {
         \Log::error('Failed to send task notification', [
             'task_id' => $this->task->id,

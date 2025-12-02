@@ -9,10 +9,7 @@ trait ApiResponse
     /**
      * Return a success JSON response.
      *
-     * @param null|array $data
-     * @param string $message
-     * @param int $code
-     * @return JsonResponse
+     * @param  null|array  $data
      */
     public static function success(string $message, int $code = 200, null|array|object $data = null): JsonResponse
     {
@@ -24,7 +21,7 @@ trait ApiResponse
         ];
 
         // Conditionally add 'data' if it's not empty
-        if (!empty($data)) {
+        if (! empty($data)) {
             $response['data'] = $data;
         }
 
@@ -32,13 +29,10 @@ trait ApiResponse
         return response()->json($response, $code);
     }
 
-
     /**
      * Return an error array response.
      *
-     * @param string|array $error
-     * @param int $code
-     * @return JsonResponse
+     * @param  string|array  $error
      */
     public static function error(string|array $message, int $code = 400, array $errors = []): JsonResponse
     {
@@ -50,12 +44,11 @@ trait ApiResponse
         ];
 
         // Conditionally add 'errors' if it's not empty
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             $response['errors'] = $errors;
         }
 
         // Return the JSON response
         return response()->json($response, $code);
     }
-
 }

@@ -32,6 +32,6 @@ class RoleDTO
         return array_filter([
             'name' => $this->name,
             'description' => $this->description,
-        ], fn($value) => !is_null($value));
+        ], fn ($value) => ! is_null($value));
     }
 }

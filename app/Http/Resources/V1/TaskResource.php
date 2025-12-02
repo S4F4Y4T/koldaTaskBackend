@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * API Resource for Task model
- * 
+ *
  * Transforms task data for API responses with consistent formatting.
  */
 class TaskResource extends JsonResource

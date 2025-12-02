@@ -8,7 +8,6 @@ class RoleFilter extends QueryFilter
 
     public function name(string $value): void
     {
-        $this->builder->where('name', 'like', '%' . $value . '%');
+        $this->builder->where('name', 'like', '%'.$value.'%');
     }
-
 }

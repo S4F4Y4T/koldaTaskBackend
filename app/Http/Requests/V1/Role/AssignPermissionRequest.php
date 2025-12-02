@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\V1\Role;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AssignPermissionRequest extends FormRequest

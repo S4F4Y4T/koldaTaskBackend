@@ -29,22 +29,20 @@ enum PermissionEnum: string
     case TASK_UPDATE = 'task_update';
     case TASK_DELETE = 'task_delete';
 
-
-
     public static function modules(): array
     {
         return [
             'User Management' => [
-                self::USER_READ, self::USER_CREATE, self::USER_UPDATE, self::USER_DELETE
+                self::USER_READ, self::USER_CREATE, self::USER_UPDATE, self::USER_DELETE,
             ],
             'Role Management' => [
-                self::ROLE_READ, self::ROLE_CREATE, self::ROLE_UPDATE, self::ROLE_DELETE, self::ROLE_ASSIGN_PERMISSION
+                self::ROLE_READ, self::ROLE_CREATE, self::ROLE_UPDATE, self::ROLE_DELETE, self::ROLE_ASSIGN_PERMISSION,
             ],
             'Project Management' => [
-                self::PROJECT_READ, self::PROJECT_CREATE, self::PROJECT_UPDATE, self::PROJECT_DELETE
+                self::PROJECT_READ, self::PROJECT_CREATE, self::PROJECT_UPDATE, self::PROJECT_DELETE,
             ],
             'Task Management' => [
-                self::TASK_READ, self::TASK_CREATE, self::TASK_UPDATE, self::TASK_DELETE
+                self::TASK_READ, self::TASK_CREATE, self::TASK_UPDATE, self::TASK_DELETE,
             ],
 
         ];

@@ -4,18 +4,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\DTOs\V1\ProjectDTO;
 use App\Filters\V1\ProjectFilter;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\Project\StoreProjectRequest;
 use App\Http\Requests\V1\Project\UpdateProjectRequest;
 use App\Http\Resources\V1\ProjectResource;
 use App\Models\Project;
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Controller;
 
 class ProjectController extends Controller
 {
-
     protected string $policyModel = Project::class;
 
     public function index(Request $request): JsonResponse
@@ -32,6 +30,7 @@ class ProjectController extends Controller
             data: ProjectResource::collection($projects)
         );
     }
+
     public function store(StoreProjectRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
@@ -69,7 +68,7 @@ class ProjectController extends Controller
             data: ProjectResource::make($project)
         );
     }
-    
+
     public function destroy(Project $project): JsonResponse
     {
         $this->isAuthorized('delete', $project);

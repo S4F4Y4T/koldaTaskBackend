@@ -44,6 +44,6 @@ class ProjectDTO
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'status' => $this->status,
-        ], fn($value) => !is_null($value));
+        ], fn ($value) => ! is_null($value));
     }
 }

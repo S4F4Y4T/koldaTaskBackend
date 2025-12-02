@@ -2,13 +2,12 @@
 
 namespace App\Policies\V1;
 
+use App\Enums\PermissionEnum;
 use App\Models\Project;
 use App\Models\User;
-use App\Enums\PermissionEnum;
 
 class ProjectPolicy
 {
-
     public function all(User $user): bool
     {
         return $user->can(PermissionEnum::PROJECT_READ->value);
@@ -34,4 +33,3 @@ class ProjectPolicy
         return $user->can(PermissionEnum::PROJECT_DELETE->value);
     }
 }
-    

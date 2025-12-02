@@ -3,7 +3,7 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
 
-//login
+// login
 
 beforeEach(function () {
     // Create a test user
@@ -112,7 +112,7 @@ it('rejects a request with an expired token', function () {
     sleep(61);
 
     $usersResponse = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ])->getJson(route('v1.auth.me'));
 
     expect($usersResponse->status())->toBe(401)
@@ -130,11 +130,11 @@ it('fails when logged in user login', function () {
     $token = $response->json('data')['access_token'];
 
     $usersResponse = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ])->postJson(route('v1.auth.login'), [
-                'email' => $this->user->email,
-                'password' => 'password',
-            ]);
+        'email' => $this->user->email,
+        'password' => 'password',
+    ]);
 
     expect($usersResponse->status())->toBe(403)
         ->and($usersResponse->json('message'))->toBe('You are already logged In.');
@@ -150,16 +150,16 @@ it('authenticate user logout successfully', function () {
     $token = $response->json('data')['access_token'];
 
     $logoutResponse = $this->withToken($token)->postJson(route('v1.auth.logout'), [
-                'email' => $this->user->email,
-                'password' => 'password',
-            ]);
+        'email' => $this->user->email,
+        'password' => 'password',
+    ]);
 
     expect($logoutResponse->status())->toBe(200)
         ->and($logoutResponse->json('type'))->toBe('success')
         ->and($logoutResponse->json('message'))->toBe('Successfully logged out');
 
     $usersResponse = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ])->getJson(route('v1.auth.me'));
 
     expect($usersResponse->status())->toBe(401)
@@ -186,7 +186,7 @@ it('refresh token', function () {
     $accessToken = $response->json('data')['access_token'];
     $refreshToken = $response->headers->getCookies()[0]->getValue();
 
-    $refreshResponse = $this->withHeader('Authorization', 'Bearer ' . $accessToken)
+    $refreshResponse = $this->withHeader('Authorization', 'Bearer '.$accessToken)
         ->withCookie('refresh_token', $refreshToken)
         ->postJson(route('v1.auth.refresh'));
 
@@ -197,4 +197,3 @@ it('refresh token', function () {
         ->and($refreshResponse->json('data')['access_token'])->not->toBeNull();
 
 })->skip();
-

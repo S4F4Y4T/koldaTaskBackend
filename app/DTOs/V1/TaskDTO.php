@@ -48,7 +48,6 @@ class TaskDTO
             'deadline' => $this->deadline,
             'assigned_user_id' => $this->assigned_user_id,
             'project_id' => $this->project_id,
-        ], fn($value) => !is_null($value));
+        ], fn ($value) => ! is_null($value));
     }
-
 }

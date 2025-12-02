@@ -19,5 +19,3 @@ arch('app')
 arch('traits')
     ->expect('App\Traits')
     ->toBeTraits();
-
-

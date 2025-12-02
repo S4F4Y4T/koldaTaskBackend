@@ -2,8 +2,6 @@
 
 namespace App\Filters\V1;
 
-use Illuminate\Database\Eloquent\Builder;
-
 class TaskFilter extends QueryFilter
 {
     protected array $sort = [
@@ -17,7 +15,7 @@ class TaskFilter extends QueryFilter
     {
         $this->builder->where('status', $status);
     }
-    
+
     public function projectId(int $projectId): void
     {
         $this->builder->where('project_id', $projectId);
@@ -27,7 +25,7 @@ class TaskFilter extends QueryFilter
     {
         $this->builder->where('assigned_user_id', $userId);
     }
-    
+
     public function title(string $title): void
     {
         $this->builder->where('title', 'like', "%{$title}%");
@@ -50,4 +48,4 @@ class TaskFilter extends QueryFilter
     {
         $this->builder->where('deadline', '<=', $date);
     }
-}   
+}

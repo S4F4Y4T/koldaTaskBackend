@@ -2,9 +2,9 @@
 
 namespace App\Policies\V1;
 
+use App\Enums\PermissionEnum;
 use App\Models\Task;
 use App\Models\User;
-use App\Enums\PermissionEnum;
 
 class TaskPolicy
 {

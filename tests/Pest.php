@@ -15,7 +15,7 @@ use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 pest()->extend(Tests\TestCase::class)
-  ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
+    ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -51,6 +51,6 @@ function actingAsJwt($user = null, array $attributes = [])
     $token = JWTAuth::fromUser($user);
 
     return test()->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
+        'Authorization' => 'Bearer '.$token,
     ]);
 }

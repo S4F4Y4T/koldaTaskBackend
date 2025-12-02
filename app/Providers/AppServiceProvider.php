@@ -2,15 +2,13 @@
 
 namespace App\Providers;
 
-use App\Models\ItemStock;
-use App\Models\Role;
-use App\Models\User;
-use App\Policies\V1\RolePolicy;
 use App\Models\Project;
-use App\Policies\V1\ProjectPolicy;
+use App\Models\Role;
 use App\Models\Task;
+use App\Models\User;
+use App\Policies\V1\ProjectPolicy;
+use App\Policies\V1\RolePolicy;
 use App\Policies\V1\TaskPolicy;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -30,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::shouldBeStrict(!$this->app->isProduction());
+        Model::shouldBeStrict(! $this->app->isProduction());
         Model::unguard();
 
         // Register policies

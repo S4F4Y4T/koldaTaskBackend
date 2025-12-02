@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Middleware\IdempotencyMiddleware;
+use App\Http\Middleware\GuestMiddleware;
 use App\Http\Middleware\JwtMiddleware;
-use App\Http\Middleware\ValidateCartOwnership;
-use App\Http\Middleware\ValidateCartClearAuth;
 use App\Traits\V1\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -21,7 +19,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use App\Http\Middleware\GuestMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -30,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         apiPrefix: '/api',
-        then: function() {
+        then: function () {
             Route::middleware('api')
                 ->prefix('/api/v1')
                 ->name('v1.')
@@ -58,66 +55,63 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($e instanceof ParseError) {
 
                 return ApiResponse::error($e->getMessage() ?? 'Something went wrong',
-                    (int)$e->getCode() ?: 500
+                    (int) $e->getCode() ?: 500
                 );
             }
         });
 
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Record not found", 404);
+            return ApiResponse::error($exception->getMessage() ?? 'Record not found', 404);
         });
 
         $exceptions->render(function (ModelNotFoundException $exception, Request $request) {
             $model = str_replace('App\\Models\\', '', $exception->getModel());
+
             return ApiResponse::error("The requested {$model} was not found.", 404);
         });
 
         $exceptions->render(function (AuthorizationException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Unauthorized access", 403);
+            return ApiResponse::error($exception->getMessage() ?? 'Unauthorized access', 403);
         });
 
         $exceptions->render(function (AccessDeniedHttpException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Access denied", 403);
+            return ApiResponse::error($exception->getMessage() ?? 'Access denied', 403);
         });
 
         $exceptions->render(function (AuthenticationException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Unauthenticated", 401);
+            return ApiResponse::error($exception->getMessage() ?? 'Unauthenticated', 401);
         });
 
         $exceptions->render(function (ValidationException $exception, Request $request) {
 
-            return ApiResponse::error($exception->getMessage() ?? "Validation Failed", 422, errors: $exception->errors());
+            return ApiResponse::error($exception->getMessage() ?? 'Validation Failed', 422, errors: $exception->errors());
         });
 
         $exceptions->render(function (UnauthorizedHttpException $exception, Request $request) {
 
-            return ApiResponse::error($exception->getMessage() ?? "Unauthorized Request", 422);
+            return ApiResponse::error($exception->getMessage() ?? 'Unauthorized Request', 422);
         });
 
         $exceptions->render(function (QueryException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Query Exception", 422);
+            return ApiResponse::error($exception->getMessage() ?? 'Query Exception', 422);
         });
 
         $exceptions->render(function (TooManyRequestsHttpException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Too many requests", 429);
+            return ApiResponse::error($exception->getMessage() ?? 'Too many requests', 429);
         });
 
         $exceptions->render(function (InvalidArgumentException $exception, Request $request) {
-            return ApiResponse::error($exception->getMessage() ?? "Invalid Argument", 400);
+            return ApiResponse::error($exception->getMessage() ?? 'Invalid Argument', 400);
         });
 
         $exceptions->render(function (Exception $exception, Request $request) {
 
-           info($exception);
+            info($exception);
 
             return ApiResponse::error($exception->getMessage() ?? 'Something went wrong',
-                (int)$exception->getCode() ?: 500
+                (int) $exception->getCode() ?: 500
             );
 
         });
 
     })->create();
-
-
-
-

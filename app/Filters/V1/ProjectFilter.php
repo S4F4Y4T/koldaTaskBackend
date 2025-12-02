@@ -2,11 +2,8 @@
 
 namespace App\Filters\V1;
 
-use Illuminate\Database\Eloquent\Builder;
-
 class ProjectFilter extends QueryFilter
 {
-
     protected array $sort = [
         'title' => 'title',
         'client' => 'client',

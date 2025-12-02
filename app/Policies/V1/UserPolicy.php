@@ -2,8 +2,8 @@
 
 namespace App\Policies\V1;
 
-use App\Models\User;
 use App\Enums\PermissionEnum;
+use App\Models\User;
 
 class UserPolicy
 {
@@ -21,7 +21,7 @@ class UserPolicy
     }
 
     public function create(User $user): bool
-    {   
+    {
         return $user->can(PermissionEnum::USER_CREATE->value);
     }
 

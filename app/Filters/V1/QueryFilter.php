@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 abstract class QueryFilter
 {
     protected Builder $builder;
+
     protected Request $request;
+
     protected array $sort = [];
 
     public function __construct(Request $request)
@@ -33,22 +35,22 @@ abstract class QueryFilter
         // Apply filters from direct query parameters
         $allParams = $this->request->all();
         $filterParams = [];
-        
+
         foreach ($allParams as $key => $value) {
             // Convert snake_case to camelCase for method names
             $methodName = str_replace('_', '', ucwords($key, '_'));
             $methodName = lcfirst($methodName);
-            
+
             if (method_exists($this, $methodName) && $key !== 'sort') {
                 $filterParams[$methodName] = $value;
             }
         }
-        
-        if (!empty($filterParams)) {
+
+        if (! empty($filterParams)) {
             $this->filter($filterParams);
         }
 
-        if($this->request->has('sort') && !empty($this->request->get('sort'))) {
+        if ($this->request->has('sort') && ! empty($this->request->get('sort'))) {
             $this->sort($this->request->get('sort'));
         }
     }
@@ -56,7 +58,7 @@ abstract class QueryFilter
     private function filter(array $filters): void
     {
         foreach ($filters as $key => $value) {
-            if(method_exists($this, $key)){
+            if (method_exists($this, $key)) {
                 $this->$key($value);
             }
         }
@@ -64,7 +66,7 @@ abstract class QueryFilter
 
     private function sort(string $sort = ''): void
     {
-        $sorts = explode(',',$sort);
+        $sorts = explode(',', $sort);
 
         foreach ($sorts as $sort) {
 
@@ -77,7 +79,7 @@ abstract class QueryFilter
                 $sort = substr($sort, 1); // Remove the '-' sign
             }
 
-            if(!in_array($sort, $this->sort) && !array_key_exists($sort, $this->sort)) {
+            if (! in_array($sort, $this->sort) && ! array_key_exists($sort, $this->sort)) {
                 continue;
             }
 
@@ -87,5 +89,4 @@ abstract class QueryFilter
             $this->builder->orderBy($column, $direction);
         }
     }
-
 }

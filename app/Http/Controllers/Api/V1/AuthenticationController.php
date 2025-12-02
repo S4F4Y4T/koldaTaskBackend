@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\Authentication\LoginRequest;
 use App\Http\Resources\V1\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use App\Http\Controllers\Api\Controller;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticationController extends Controller
 {
@@ -17,7 +16,7 @@ class AuthenticationController extends Controller
     {
         $token = auth()->attempt($request->validated());
 
-        if (!$token) {
+        if (! $token) {
             return self::error('Invalid credentials.', 401);
         }
 
@@ -39,12 +38,12 @@ class AuthenticationController extends Controller
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
             return self::error('Refresh token not provided.', 400);
         }
 
         try {
-            
+
             return $this->respondWithToken(
                 auth()->setToken($refreshToken)->refresh()
             );
@@ -71,13 +70,13 @@ class AuthenticationController extends Controller
     protected function respondWithToken($token): JsonResponse
     {
         return self::success(message: 'authentication successful',
-            data:[
+            data: [
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60,
                 'user' => UserResource::make(
                     auth()->user()->load('roles.permissions')
-                )
+                ),
             ]);
     }
 }

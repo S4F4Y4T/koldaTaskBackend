@@ -10,6 +10,7 @@ trait PaginateAll
         if ($perPage == -1) {
             return $this->get($columns);
         }
+
         return parent::paginate($perPage, $columns, $pageName, $page);
     }
 }

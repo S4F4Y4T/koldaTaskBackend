@@ -48,6 +48,4 @@ trait Authorization
 
         return false;
     }
-
-
 }

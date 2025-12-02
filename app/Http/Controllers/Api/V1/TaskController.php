@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\DTOs\V1\TaskDTO;
 use App\Filters\V1\TaskFilter;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\Task\StoreTaskRequest;
 use App\Http\Requests\V1\Task\UpdateTaskRequest;
 use App\Http\Resources\V1\TaskResource;
@@ -11,12 +12,9 @@ use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\Controller;
-
 
 class TaskController extends Controller
 {
-
     protected string $policyModel = Task::class;
 
     public function index(Request $request, TaskFilter $filter): JsonResponse

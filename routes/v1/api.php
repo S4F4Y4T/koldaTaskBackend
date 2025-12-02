@@ -1,19 +1,16 @@
 <?php
 
-use App\Traits\V1\ApiResponse;
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\ModuleController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\Api\V1\DashboardController;
+use App\Traits\V1\ApiResponse;
+use Illuminate\Support\Facades\Route;
 
+require __DIR__.'/auth.php';
+require __DIR__.'/project.php';
 
-require __DIR__ . '/auth.php';
-require __DIR__ . '/project.php';
-
-Route::middleware(['jwt.auth', 'throttle:jwt'])->group(function () 
-{
+Route::middleware(['jwt.auth', 'throttle:jwt'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::apiResource('users', UserController::class);
     Route::get('modules', [ModuleController::class, 'index']);

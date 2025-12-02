@@ -4,10 +4,8 @@ namespace App\Models;
 
 use App\Enums\TaskStatus;
 use App\Events\TaskCreated;
-use App\Filters\V1\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Main
@@ -48,6 +46,7 @@ class Task extends Main
     public function scopeByStatus(Builder $query, TaskStatus|string $status): Builder
     {
         $statusValue = $status instanceof TaskStatus ? $status->value : $status;
+
         return $query->where('status', $statusValue);
     }
 
@@ -56,7 +55,7 @@ class Task extends Main
         return $query->where('deadline', '<', now())
             ->whereNotIn('status', [
                 TaskStatus::COMPLETED->value,
-                TaskStatus::CANCELLED->value
+                TaskStatus::CANCELLED->value,
             ]);
     }
 
@@ -85,6 +84,7 @@ class Task extends Main
     public function markAsCompleted(): bool
     {
         $this->status = TaskStatus::COMPLETED;
+
         return $this->save();
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * Mailable class for task assignment notification
- * 
+ *
  * Sends an email to the user when they are assigned a new task.
  */
 class TaskAssignedMail extends Mailable
@@ -20,13 +20,10 @@ class TaskAssignedMail extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param Task $task
      */
     public function __construct(
         public Task $task
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -34,7 +31,7 @@ class TaskAssignedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Task Assigned: ' . $this->task->title,
+            subject: 'New Task Assigned: '.$this->task->title,
         );
     }
 

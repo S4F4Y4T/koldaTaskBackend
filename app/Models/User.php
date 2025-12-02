@@ -3,10 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Filters\V1\QueryFilter;
 use App\Traits\V1\Authorization;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,7 +13,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, Authorization, CanResetPassword;
+    use Authorization, CanResetPassword, HasFactory, Notifiable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -87,6 +86,7 @@ class User extends Authenticatable implements JWTSubject
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -108,5 +108,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(\App\Models\Task::class, 'assigned_user_id');
     }
-
 }

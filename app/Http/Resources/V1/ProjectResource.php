@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * API Resource for Project model
- * 
+ *
  * Transforms project data for API responses with consistent formatting.
  */
 class ProjectResource extends JsonResource
@@ -29,12 +29,12 @@ class ProjectResource extends JsonResource
             'is_overdue' => $this->isOverdue(),
             'completion_percentage' => $this->when(
                 $this->relationLoaded('tasks'),
-                fn() => $this->completionPercentage()
+                fn () => $this->completionPercentage()
             ),
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
             'tasks_count' => $this->when(
                 $this->relationLoaded('tasks'),
-                fn() => $this->tasks->count()
+                fn () => $this->tasks->count()
             ),
             'created_at' => $this->created_at->toISOString(),
             'updated_at' => $this->updated_at->toISOString(),

@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -15,16 +13,15 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        //admin role for all permissions
+        // admin role for all permissions
         $admin = Role::query()->updateOrCreate(['name' => 'admin']);
         $permissions = Permission::all()->pluck('id')->toArray();
         $admin->assignPermission($permissions);
 
-        //random role for first 5 permissions
+        // random role for first 5 permissions
         $roles = Role::factory(5)->create();
         foreach ($roles as $role) {
             $role->permissions()->sync([1, 2, 3]);
         }
     }
-
 }

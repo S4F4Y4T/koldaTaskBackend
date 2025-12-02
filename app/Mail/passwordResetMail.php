@@ -6,7 +6,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class passwordResetMail extends Mailable implements ShouldQueue
@@ -17,8 +16,6 @@ class passwordResetMail extends Mailable implements ShouldQueue
 
     /**
      * Create a new message instance.
-     *
-     * @param string $resetLink
      */
     public function __construct(string $resetLink)
     {
@@ -50,7 +47,7 @@ class passwordResetMail extends Mailable implements ShouldQueue
             <a href='{$this->resetLink}' style='display: inline-block; padding: 10px 20px; color: white; background-color: #3490dc; text-decoration: none; border-radius: 5px;'>Reset Password</a>
             <p>If you did not request this reset, please ignore this email.</p>
             <br>
-            <p>Thanks,<br>" . config('app.name') . "</p>
-        ";
+            <p>Thanks,<br>".config('app.name').'</p>
+        ';
     }
 }

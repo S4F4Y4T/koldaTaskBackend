@@ -20,6 +20,7 @@ class RoleController extends Controller
     public function index(RoleFilter $filter): AnonymousResourceCollection
     {
         $this->isAuthorized('all');
+
         return RoleResource::collection(
             Role::query()->filter($filter)->paginate()
         );
@@ -28,26 +29,27 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request): JsonResponse
     {
         $this->isAuthorized('create');
-        
+
         $dto = RoleDTO::fromRequest($request);
         $role = Role::create($dto->toArray());
-        
+
         return self::success(message: 'Role created successfully', code: 201, data: RoleResource::make($role));
     }
 
     public function show(Role $role): JsonResponse
     {
         $this->isAuthorized('show', $role);
+
         return self::success(message: 'Role fetched successfully', data: RoleResource::make($role->load('permissions')));
     }
 
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse
     {
         $this->isAuthorized('update', $role);
-        
+
         $dto = RoleDTO::fromRequest($request);
         $role->update($dto->toArray());
-        
+
         return self::success(message: 'Role updated successfully', data: RoleResource::make($role));
     }
 
@@ -55,16 +57,17 @@ class RoleController extends Controller
     {
         $this->isAuthorized('delete', $role);
         $role->delete();
+
         return self::success(message: 'Role deleted successfully');
     }
 
     public function assignPermissions(Request $request, Role $role): JsonResponse
     {
         $this->isAuthorized('update', $role);
-        
+
         $request->validate([
             'permissions' => ['required', 'array'],
-            'permissions.*' => ['exists:permissions,name']
+            'permissions.*' => ['exists:permissions,name'],
         ]);
 
         $role->assignPermission($request->permissions);

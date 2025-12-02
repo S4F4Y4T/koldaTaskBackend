@@ -2,14 +2,11 @@
 
 namespace App\Policies\V1;
 
-use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use App\Enums\PermissionEnum;
+use App\Models\User;
 
 class RolePolicy
 {
-    /**
-     */
     public function all(User $user): bool
     {
         return $user->can(PermissionEnum::ROLE_READ->value);

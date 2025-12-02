@@ -15,5 +15,4 @@ return new class extends Migration
             $table->foreignId('module_id')->constrained();
         });
     }
-
 };

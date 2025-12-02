@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
@@ -27,8 +24,7 @@ class UserSeeder extends Seeder
 
         foreach ($users as $user) {
             $user->roles()->sync([1, 2, 3]);
-            $user->permissions()->sync([1,2,3]);
+            $user->permissions()->sync([1, 2, 3]);
         }
     }
-
 }
