@@ -22,6 +22,8 @@ cd koldaTaskBackend
 # Copy environment file
 cp .env.example .env
 
+# For Email Checking, update .env file with mailtrap.io settings
+
 # Start Docker containers
 docker-compose up -d --build
 
