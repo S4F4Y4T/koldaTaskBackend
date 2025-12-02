@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Policies\V1\ProjectPolicy;
 use App\Policies\V1\RolePolicy;
 use App\Policies\V1\TaskPolicy;
+use App\Policies\V1\UserPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
