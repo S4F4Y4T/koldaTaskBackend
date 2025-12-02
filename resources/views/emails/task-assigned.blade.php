@@ -148,14 +148,6 @@
                 </span>
             </div>
         </div>
-
-        <p>Please review the task details and start working on it at your earliest convenience.</p>
-
-        <div style="text-align: center;">
-            <a href="{{ config('app.url') }}/tasks/{{ $task->id }}" class="button">
-                View Task
-            </a>
-        </div>
     </div>
 
     <div class="footer">

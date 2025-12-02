@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\Controller;
-use App\Traits\V1\ApiResponse;
+use App\Services\V1\DashboardService;
+use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function __construct(protected DashboardService $dashboardService)
     {
-        return ApiResponse::success(message: 'Dashboard data', data: []);
+    }
+
+    public function index(): JsonResponse
+    {
+        $data = $this->dashboardService->getDashboardData();
+
+        return self::success(message: 'Dashboard data retrieved successfully', data: $data);
     }
 }
