@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
@@ -20,6 +20,13 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('password'), // or Hash::make()
             ]
         );
+
+        $adminRole = \App\Models\Role::where('name', 'admin')->first();
+        if ($adminRole) {
+            $user->roles()->syncWithoutDetaching([$adminRole->id]);
+        }
+
+
         $users = User::factory(5)->create();
 
         foreach ($users as $user) {

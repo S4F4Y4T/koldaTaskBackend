@@ -9,25 +9,30 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use App\Services\V1\AuthenticationService;
 
 class AuthenticationController extends Controller
 {
+    public function __construct(protected AuthenticationService $authenticationService)
+    {
+    }
+
     public function login(LoginRequest $request): JsonResponse
     {
-        $token = auth()->attempt($request->validated());
+        $result = $this->authenticationService->login($request->validated());
 
-        if (! $token) {
+        if (! $result) {
             return self::error('Invalid credentials.', 401);
         }
 
-        return $this->respondWithToken($token)
+        return $this->respondWithToken($result['access_token'])
             ->cookie(
                 'refresh_token',
-                auth()->refresh(),
+                $result['refresh_token'],
                 config('jwt.refresh_ttl', 20160),
                 '/',
                 null,
-                true,
+                app()->environment('local') ? false : true,
                 true,
                 false,
                 'strict'
@@ -45,7 +50,7 @@ class AuthenticationController extends Controller
         try {
 
             return $this->respondWithToken(
-                auth()->setToken($refreshToken)->refresh()
+                $this->authenticationService->refresh($refreshToken)
             );
 
         } catch (TokenExpiredException $e) {

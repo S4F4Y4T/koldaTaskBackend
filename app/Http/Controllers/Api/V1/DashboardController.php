@@ -9,6 +9,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return ApiResponse::success('Dashboard data', []);
+        return ApiResponse::success(message: 'Dashboard data', data: []);
     }
 }
