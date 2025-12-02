@@ -25,11 +25,7 @@ class TaskResource extends JsonResource
             'description' => $this->description,
             'deadline' => $this->deadline->toISOString(),
             'deadline_formatted' => $this->deadline->format('Y-m-d H:i:s'),
-            'status' => [
-                'value' => $this->status->value,
-                'label' => $this->status->label(),
-                'color' => $this->status->color(),
-            ],
+            'status' => $this->status->value,
             'is_overdue' => $this->isOverdue(),
             'is_completed' => $this->isCompleted(),
             'project' => ProjectResource::make($this->whenLoaded('project')),

@@ -14,14 +14,14 @@ class ProjectDTO
         public readonly string $status,
     ) {}
 
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(Request $request, ?\App\Models\Project $project = null): self
     {
         return new self(
-            title: $request->validated('title'),
-            client: $request->validated('client'),
-            start_date: $request->validated('start_date'),
-            end_date: $request->validated('end_date'),
-            status: $request->validated('status'),
+            title: $request->validated('title') ?? $project?->title,
+            client: $request->validated('client') ?? $project?->client,
+            start_date: $request->validated('start_date') ?? $project?->start_date?->format('Y-m-d'),
+            end_date: $request->validated('end_date') ?? $project?->end_date?->format('Y-m-d'),
+            status: $request->validated('status') ?? $project?->status->value,
         );
     }
 

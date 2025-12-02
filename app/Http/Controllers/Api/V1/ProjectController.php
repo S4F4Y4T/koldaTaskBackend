@@ -62,7 +62,7 @@ class ProjectController extends Controller
     {
         $this->isAuthorized('update', $project);
 
-        $project->update(ProjectDTO::fromRequest($request)->toArray());
+        $project->update(ProjectDTO::fromRequest($request, $project)->toArray());
 
         return self::success(
             'Project updated successfully.',

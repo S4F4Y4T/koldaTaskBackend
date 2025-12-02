@@ -25,11 +25,7 @@ class ProjectResource extends JsonResource
             'client' => $this->client,
             'start_date' => $this->start_date->format('Y-m-d'),
             'end_date' => $this->end_date->format('Y-m-d'),
-            'status' => [
-                'value' => $this->status->value,
-                'label' => $this->status->label(),
-                'color' => $this->status->color(),
-            ],
+            'status' => $this->status->value,
             'is_overdue' => $this->isOverdue(),
             'completion_percentage' => $this->when(
                 $this->relationLoaded('tasks'),

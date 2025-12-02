@@ -10,22 +10,20 @@ class TaskDTO
         public readonly string $title,
         public readonly string $description,
         public readonly string $status,
-        public readonly string $priority,
-        public readonly string $due_date,
-        public readonly int $assigned_to,
+        public readonly string $deadline,
+        public readonly ?int $assigned_user_id = null,
         public readonly ?int $project_id = null,
     ) {}
 
-    public static function fromRequest(Request $request, ?int $projectId = null): self
+    public static function fromRequest(Request $request, ?int $projectId = null, ?\App\Models\Task $task = null): self
     {
         return new self(
-            title: $request->validated('title'),
-            description: $request->validated('description'),
-            status: $request->validated('status'),
-            priority: $request->validated('priority'),
-            due_date: $request->validated('due_date'),
-            assigned_to: $request->validated('assigned_to'),
-            project_id: $projectId,
+            title: $request->validated('title') ?? $task?->title,
+            description: $request->validated('description') ?? $task?->description,
+            status: $request->validated('status') ?? $task?->status->value,
+            deadline: $request->validated('deadline') ?? $task?->deadline?->format('Y-m-d H:i:s'),
+            assigned_user_id: $request->validated('assigned_user_id') ?? $task?->assigned_user_id,
+            project_id: $projectId ?? $task?->project_id,
         );
     }
 
@@ -35,9 +33,8 @@ class TaskDTO
             title: $data['title'],
             description: $data['description'],
             status: $data['status'],
-            priority: $data['priority'],
-            due_date: $data['due_date'],
-            assigned_to: $data['assigned_to'],
+            deadline: $data['deadline'],
+            assigned_user_id: $data['assigned_user_id'],
             project_id: $data['project_id'] ?? null,
         );
     }
@@ -48,9 +45,8 @@ class TaskDTO
             'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
-            'priority' => $this->priority,
-            'due_date' => $this->due_date,
-            'assigned_to' => $this->assigned_to,
+            'deadline' => $this->deadline,
+            'assigned_user_id' => $this->assigned_user_id,
             'project_id' => $this->project_id,
         ], fn($value) => !is_null($value));
     }

@@ -30,14 +30,27 @@ abstract class QueryFilter
     {
         $this->builder = $builder;
 
-        if($this->request->has('filters') && is_array($this->request->get('filters')) && !empty($this->request->get('filters'))) {
-            $this->filter($this->request->get('filters'));
+        // Apply filters from direct query parameters
+        $allParams = $this->request->all();
+        $filterParams = [];
+        
+        foreach ($allParams as $key => $value) {
+            // Convert snake_case to camelCase for method names
+            $methodName = str_replace('_', '', ucwords($key, '_'));
+            $methodName = lcfirst($methodName);
+            
+            if (method_exists($this, $methodName) && $key !== 'sort') {
+                $filterParams[$methodName] = $value;
+            }
+        }
+        
+        if (!empty($filterParams)) {
+            $this->filter($filterParams);
         }
 
         if($this->request->has('sort') && !empty($this->request->get('sort'))) {
             $this->sort($this->request->get('sort'));
         }
-
     }
 
     private function filter(array $filters): void

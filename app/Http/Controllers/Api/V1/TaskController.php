@@ -60,7 +60,7 @@ class TaskController extends Controller
     {
         $this->isAuthorized('update', $task);
 
-        $task->update(TaskDTO::fromRequest($request, $task->project_id)->toArray());
+        $task->update(TaskDTO::fromRequest($request, $task->project_id, $task)->toArray());
 
         return self::success(
             'Task updated successfully.',
