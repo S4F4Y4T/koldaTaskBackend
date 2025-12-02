@@ -100,7 +100,7 @@ Get a paginated list of users.
 - **Query Parameters:**
   - `page`: Page number (default: 1)
   - `sort`: Sort field (e.g., `-id`, `name`)
-  - `filter[name]`: Filter by name
+  - `name`: Filter by name (e.g., `name=John`)
 - **Response:**
   ```json
   {
@@ -424,9 +424,8 @@ Create a new task for a specific project.
     "title": "Design Homepage",
     "description": "Create high-fidelity mockups for the homepage.",
     "status": "pending",
-    "priority": "high",
-    "due_date": "2023-01-15",
-    "assigned_to": 5
+    "deadline": "2023-01-15",
+    "assigned_user_id": 5
   }
   ```
 - **Response:**
@@ -465,9 +464,8 @@ Update an existing task.
     "title": "Design Homepage",
     "description": "Create high-fidelity mockups for the homepage.",
     "status": "in_progress",
-    "priority": "high",
-    "due_date": "2023-01-20",
-    "assigned_to": 5
+    "deadline": "2023-01-20",
+    "assigned_user_id": 5
   }
   ```
 - **Response:**
