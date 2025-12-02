@@ -486,7 +486,7 @@ cp .env.example .env
 # - DB_DATABASE=koldatech
 # - DB_USERNAME=koldatech_user
 # - DB_PASSWORD=password
-# - APP_URL=http://127.0.0.1:6000
+# - APP_URL=http://127.0.0.1:8080
 ```
 
 #### 3. Build and Start Docker Containers
@@ -549,7 +549,7 @@ exit
 
 #### 7. Access the Application
 
-- **API Base URL**: http://127.0.0.1:6000/api/v1
+- **API Base URL**: http://127.0.0.1:8080/api/v1
 - **phpMyAdmin**: http://127.0.0.1:6080
   - Server: `db`
   - Username: `root`
@@ -559,7 +559,7 @@ exit
 
 ```bash
 # Health check
-curl http://127.0.0.1:6000/api/v1/health
+curl http://127.0.0.1:8080/api/v1/health
 
 # Expected response:
 # {
@@ -601,7 +601,7 @@ After seeding, you can login with:
 │         │                                     │      │
 │  ┌──────▼──────┐                      ┌──────▼────┐ │
 │  │   Host      │                      │ phpMyAdmin│ │
-│  │  Port 6000  │                      │ Port 6080 │ │
+│  │  Port 8080  │                      │ Port 6080 │ │
 │  └─────────────┘                      └───────────┘ │
 └─────────────────────────────────────────────────────┘
 ```
@@ -622,7 +622,7 @@ After seeding, you can login with:
 #### 2. **Nginx Container** (`koldatech_nginx`)
 - **Base Image**: `nginx:latest`
 - **Purpose**: Web server and reverse proxy
-- **Ports**: `6000:80` (host:container)
+- **Ports**: `8080:80` (host:container)
 - **Configuration**: `./nginx/default.conf`
 - **Max Upload**: 1000MB
 
@@ -684,7 +684,7 @@ docker-compose down -v
 docker-compose logs app
 
 # Check if port is already in use
-lsof -i :6000
+lsof -i :8080
 lsof -i :6080
 ```
 

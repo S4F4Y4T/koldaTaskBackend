@@ -40,9 +40,9 @@ docker-compose exec app chmod -R 775 storage bootstrap/cache
 
 ### Access Points
 
-- **API**: http://127.0.0.1:6000/api/v1
+- **API**: http://127.0.0.1:8080/api/v1
 - **phpMyAdmin**: http://127.0.0.1:6080
-- **Health Check**: http://127.0.0.1:6000/api/v1/health
+- **Health Check**: http://127.0.0.1:8080/api/v1/health
 
 ### Default Login
 
@@ -144,7 +144,7 @@ app/
 ## Docker Services
 
 - **app** - PHP-FPM 8.3 application container
-- **nginx** - Nginx web server (port 6000)
+- **nginx** - Nginx web server (port 8080)
 - **db** - MySQL 8.0 database
 - **phpmyadmin** - Database management GUI (port 6080)
 
