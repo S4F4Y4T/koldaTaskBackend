@@ -35,7 +35,6 @@ class ProjectResource extends JsonResource
                 $this->relationLoaded('tasks'),
                 fn() => $this->completionPercentage()
             ),
-            'creator' => UserResource::make($this->whenLoaded('creator')),
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
             'tasks_count' => $this->when(
                 $this->relationLoaded('tasks'),

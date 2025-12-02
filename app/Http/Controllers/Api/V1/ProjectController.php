@@ -16,12 +16,14 @@ use App\Http\Controllers\Api\Controller;
 class ProjectController extends Controller
 {
 
+    protected string $policyModel = Project::class;
+
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('all', Project::class);
+        $this->isAuthorized('all');
 
         $filter = ProjectFilter::init();
-        $projects = Project::with(['creator', 'tasks'])
+        $projects = Project::with(['tasks'])
             ->filter($filter)
             ->get();
 
@@ -32,7 +34,7 @@ class ProjectController extends Controller
     }
     public function store(StoreProjectRequest $request): JsonResponse
     {
-        $this->authorize('create', Project::class);
+        $this->isAuthorized('create');
 
         $dto = ProjectDTO::fromRequest($request);
         $project = Project::create($dto->toArray());
@@ -40,15 +42,15 @@ class ProjectController extends Controller
         return self::success(
             'Project created successfully.',
             201,
-            ProjectResource::make($project->load('creator'))
+            ProjectResource::make($project)
         );
     }
 
     public function show(Project $project): JsonResponse
     {
-        $this->authorize('view', $project);
+        $this->isAuthorized('view', $project);
 
-        $project->load(['tasks.assignedUser', 'creator']);
+        $project->load(['tasks.assignedUser']);
 
         return self::success(
             'Project retrieved successfully.',
@@ -58,19 +60,19 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     {
-        $this->authorize('update', $project);
+        $this->isAuthorized('update', $project);
 
         $project->update(ProjectDTO::fromRequest($request)->toArray());
 
         return self::success(
             'Project updated successfully.',
-            data: ProjectResource::make($project->load('creator'))
+            data: ProjectResource::make($project)
         );
     }
     
     public function destroy(Project $project): JsonResponse
     {
-        $this->authorize('delete', $project);
+        $this->isAuthorized('delete', $project);
 
         $project->delete();
 

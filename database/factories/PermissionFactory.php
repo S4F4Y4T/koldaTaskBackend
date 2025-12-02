@@ -18,6 +18,7 @@ class PermissionFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
+            'module_id' => \App\Models\Module::factory(),
         ];
     }
 }

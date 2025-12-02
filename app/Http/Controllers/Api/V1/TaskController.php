@@ -21,7 +21,7 @@ class TaskController extends Controller
 
     public function index(Request $request, TaskFilter $filter): JsonResponse
     {
-        $this->authorize('all');
+        $this->isAuthorized('all');
 
         $tasks = Task::with(['project', 'assignedUser'])
             ->filter($filter)
@@ -35,7 +35,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request, Project $project): JsonResponse
     {
-        $this->authorize('create');
+        $this->isAuthorized('create');
 
         $task = Task::create(TaskDTO::fromRequest($request, $project->id)->toArray());
 
@@ -48,7 +48,7 @@ class TaskController extends Controller
 
     public function show(Task $task): JsonResponse
     {
-        $this->authorize('view', $task);
+        $this->isAuthorized('view', $task);
 
         return self::success(
             'Task retrieved successfully.',
@@ -58,7 +58,7 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
-        $this->authorize('update', $task);
+        $this->isAuthorized('update', $task);
 
         $task->update(TaskDTO::fromRequest($request, $task->project_id)->toArray());
 
@@ -70,7 +70,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task): JsonResponse
     {
-        $this->authorize('delete', $task);
+        $this->isAuthorized('delete', $task);
 
         $task->delete();
 
