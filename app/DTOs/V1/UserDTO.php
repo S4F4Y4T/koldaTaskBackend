@@ -11,6 +11,7 @@ class UserDTO
         public readonly string $name,
         public readonly string $email,
         public readonly ?string $password = null,
+        public readonly array $role_ids = [],
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -19,6 +20,7 @@ class UserDTO
             name: $request->validated('name'),
             email: $request->validated('email'),
             password: $request->validated('password'),
+            role_ids: $request->validated('role_ids', []),
         );
     }
 
@@ -28,6 +30,7 @@ class UserDTO
             name: $data['name'],
             email: $data['email'],
             password: $data['password'] ?? null,
+            role_ids: $data['role_ids'] ?? [],
         );
     }
 

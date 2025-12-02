@@ -22,7 +22,7 @@ class UserController extends Controller
         $this->isAuthorized('all');
 
         return UserResource::collection(
-            User::query()->filter($filter)->paginate()
+            User::with('roles')->filter($filter)->paginate()
         );
     }
 
@@ -32,6 +32,8 @@ class UserController extends Controller
 
         $dto = UserDTO::fromRequest($request);
         $user = User::create($dto->toArray());
+        $user->assignRoles($dto->role_ids);
+        $user->load('roles');
 
         return self::success(message: 'User created successfully', code: 201, data: UserResource::make($user));
     }
@@ -39,6 +41,7 @@ class UserController extends Controller
     public function show(User $user): JsonResource
     {
         $this->isAuthorized('show', $user);
+        $user->load('roles');
 
         return UserResource::make($user);
     }
@@ -49,6 +52,8 @@ class UserController extends Controller
 
         $dto = UserDTO::fromRequest($request);
         tap($user)->update($dto->toArray());
+        $user->roles()->sync($dto->role_ids);
+        $user->load('roles');
 
         return self::success(message: 'User updated successfully', data: new UserResource($user));
     }
