@@ -48,7 +48,7 @@ docker-compose exec app chmod -R 775 storage bootstrap/cache
 
 ```json
 {
-  "email": "admin@example.com",
+  "email": "test@example.com",
   "password": "password"
 }
 ```
